@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="HorasPorMes" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="388e07ca-ecb9-4126-9925-9744d281a47c">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySqlTTdb.xml"/>
+	<parameter name="FechaDesde" class="java.util.Date"/>
+	<parameter name="FechaHasta" class="java.util.Date"/>
+	<parameter name="clienteId" class="java.lang.Integer"/>
+	<parameter name="clientName" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select YEAR(h.created) as anio, MONTH(h.created) as mes,  round(sum(h.minutes)/60,2) as horas, round((sum(h.minutes)/60)/160,2) as recursos
+from HourRegistry h
+join Task t
+on h.task_id = t.id
+join Project p 
+on p.id = t.project_id
+join User u 
+on u.id = h.user_id
+join Client c 
+on c.id = p.client_id
+where 
+c.id = $P{clienteId}
+and h.created <= $P{FechaHasta} 
+and h.created >= $P{FechaDesde}
+GROUP BY YEAR(h.created), MONTH(h.created);]]>
+	</queryString>
+	<field name="anio" class="java.lang.Integer"/>
+	<field name="mes" class="java.lang.Integer"/>
+	<field name="horas" class="java.lang.String"/>
+	<field name="recursos" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#006699" uuid="d996bf4e-9d35-46e3-a028-736ea79efb61"/>
+				<staticText>
+					<reportElement x="20" y="20" width="290" height="43" forecolor="#FFFFFF" uuid="7be29fa7-65e9-4066-964d-c5bbe9c6a334"/>
+					<textElement>
+						<font size="34" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Horas por mes]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="310" y="10" width="80" height="20" forecolor="#FFFFFF" uuid="f53a3666-9ce2-4507-84fc-9d87793977a9"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Desde]]></text>
+				</staticText>
+				<textField pattern="d/M/yy">
+					<reportElement x="420" y="6" width="115" height="23" forecolor="#FFFFFF" uuid="a7ebb9d4-c79f-4c70-9526-0c4852424f43"/>
+					<textElement verticalAlignment="Bottom">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{FechaDesde}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="310" y="50" width="80" height="20" forecolor="#FFFFFF" uuid="1405efe9-5b01-4d47-ad12-ef3509321fd7"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Hasta]]></text>
+				</staticText>
+				<textField pattern="d/M/yy">
+					<reportElement x="420" y="46" width="120" height="23" forecolor="#FFFFFF" uuid="cde76717-becf-4248-9184-8190757d5450"/>
+					<textElement verticalAlignment="Bottom">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{FechaHasta}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="30" y="70" width="80" height="20" forecolor="#FFFFFF" uuid="02d372e8-d878-4d70-b82a-9e305764b7a6"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Cliente]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="130" y="65" width="110" height="22" forecolor="#FFFFFF" backcolor="#FFFFFF" uuid="48eccc8f-fa9d-4750-ad7f-eb3fb7628b4a"/>
+					<textElement verticalAlignment="Bottom">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{clientName}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21">
+			<line>
+				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="8cbde077-862e-487d-8b70-fb75a9ca2103"/>
+			</line>
+			<staticText>
+				<reportElement x="65" y="0" width="100" height="21" uuid="ccbbd2e5-17dc-4af2-82ba-b931b6384b0e">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a2eb6f2d-c036-4fa0-bf39-61d23db2ca94"/>
+				</reportElement>
+				<text><![CDATA[anio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="0" width="100" height="21" uuid="2004b784-f484-4565-8ce9-8f75e70e2ef6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6de94098-0616-4330-adbb-35c1f261200b"/>
+				</reportElement>
+				<text><![CDATA[mes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="0" width="100" height="21" uuid="eeefcb1c-c72e-455a-a3dd-7b485b1e6924">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="51171a98-f033-4ec2-a5da-cbe9cdba19d9"/>
+				</reportElement>
+				<text><![CDATA[horas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="415" y="0" width="100" height="21" uuid="0d4fdc5c-93a8-4eeb-af52-1754f611eb1c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="36507f40-b3c4-4a1f-a688-12c761babb5a"/>
+				</reportElement>
+				<text><![CDATA[recursos]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="24">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="20" width="555" height="1" uuid="f4978caf-59b7-47f6-b996-ad2909cc5c14"/>
+			</line>
+			<textField>
+				<reportElement x="65" y="4" width="100" height="16" uuid="beaa2a26-9bc8-43c8-ad9c-6a58d22aacb8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a2eb6f2d-c036-4fa0-bf39-61d23db2ca94"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{anio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="4" width="100" height="16" uuid="039eb0b9-9b9d-4c8f-b693-9b3105c87fb4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6de94098-0616-4330-adbb-35c1f261200b"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{mes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="300" y="4" width="100" height="16" uuid="986ccc01-2019-4bf7-8e01-9d1042a2c6a2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="51171a98-f033-4ec2-a5da-cbe9cdba19d9"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{horas}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="415" y="4" width="100" height="16" uuid="a0e45212-d181-4dd8-af87-332c6c8d1bfa">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="36507f40-b3c4-4a1f-a688-12c761babb5a"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{recursos}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="8594a362-9a3f-431b-816e-f57d35134369"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="d86c414e-4cf6-44b0-ab63-759ccbad1389"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13" uuid="06af20d8-9943-4820-857b-b5b35beda5fe"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>
