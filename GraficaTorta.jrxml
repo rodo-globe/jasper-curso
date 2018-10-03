@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="GraficaTorta" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b719052c-2324-4a68-9190-0a0bad6588dd">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySqlTTdb.xml"/>
+	<parameter name="fechaDesde" class="java.util.Date"/>
+	<parameter name="fechaHasta" class="java.util.Date"/>
+	<parameter name="clienteId" class="java.lang.Long"/>
+	<queryString language="SQL">
+		<![CDATA[select 
+concat(YEAR(h.created), "/", MONTH(h.created)) as fecha,  
+round(sum(h.minutes)/60,2) as horas
+from HourRegistry h
+join Task t
+on h.task_id = t.id
+join Project p 
+on p.id = t.project_id
+join User u 
+on u.id = h.user_id
+join Client c 
+on c.id = p.client_id
+where 
+c.id = $P{clienteId}
+and h.created <= $P{fechaHasta}
+and h.created >= $P{fechaDesde}
+GROUP BY 
+ concat(YEAR(h.created), "/", MONTH(h.created))  
+ORDER by concat(YEAR(h.created), "/", MONTH(h.created)) ;]]>
+	</queryString>
+	<field name="fecha" class="java.lang.String"/>
+	<field name="horas" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="408" splitType="Stretch">
+			<pieChart>
+				<chart evaluationTime="Report">
+					<reportElement x="20" y="10" width="428" height="360" uuid="ebb890e2-e023-443f-bb39-93064d97c7e3"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{fecha}]]></keyExpression>
+					<valueExpression><![CDATA[$F{horas}]]></valueExpression>
+					<labelExpression><![CDATA[$F{horas}.toString()]]></labelExpression>
+				</pieDataset>
+				<piePlot>
+					<plot/>
+					<itemLabel/>
+				</piePlot>
+			</pieChart>
+		</band>
+	</title>
+</jasperReport>
